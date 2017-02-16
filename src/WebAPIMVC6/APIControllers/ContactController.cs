@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Linq.Dynamic.Core;
 using SeagullConsulting.WebAPIMVC6Website.Data.POCO;
 using SeagullConsulting.WebAPIMVC6Website.Data.Repository;
 using SeagullConsulting.WebAPIMVC6Website.Web.UI.Models;
@@ -34,9 +35,9 @@ namespace SeagullConsulting.WebAPIMVC6Website.Web.UI.APIControllers
         [HttpGet("Paged")]
         public async Task<ContactsView> Paged(int page, int pageSize, string sortColumn, string direction)
         {
-            ContactView contact;
-            ICollection<ContactView> sortedContacts = new List<ContactView>();
+            IEnumerable<Contact> sortedContacts = null;
             ICollection<Contact> contacts = await repository.FindAllView();
+            string sortParms = String.Format("{0} {1}", sortColumn, direction.ToUpper());
 
             if (pageSize > contacts.Count())
                 pageSize = contacts.Count();
@@ -45,31 +46,13 @@ namespace SeagullConsulting.WebAPIMVC6Website.Web.UI.APIControllers
             if (itemCount > contacts.Count())
                 itemCount = contacts.Count();
 
+            sortedContacts = contacts.AsQueryable().OrderBy<Contact>(sortParms).AsEnumerable<Contact>();
+
             ContactsView cv = new ContactsView()
             {
-                TotalItems = contacts.Count()
+                TotalItems = contacts.Count(),
+                Contacts = sortedContacts.Take(itemCount).Skip(start)
             };
-
-            foreach (Contact c in contacts)
-            {
-                contact = new ContactView()
-                {
-                    FirstName = c.FirstName,
-                    LastName = c.LastName,
-                    City = c.City.Name,
-                    State = c.City.State.Name,
-                    Active = c.Active
-                };
-                sortedContacts.Add(contact);
-            }
-
-            if (direction.ToUpper() == "ASC")
-                sortedContacts = sortedContacts.OrderBy(i => i.GetType().GetProperty(sortColumn).GetValue(i, null)).ToList();
-            else
-                sortedContacts = sortedContacts.OrderByDescending(i => i.GetType().GetProperty(sortColumn).GetValue(i, null)).ToList();
-
-            cv.Contacts = sortedContacts.Take(itemCount).Skip(start);
-
 
             return cv;
         }

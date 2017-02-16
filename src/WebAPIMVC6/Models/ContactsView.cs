@@ -8,16 +8,7 @@ namespace SeagullConsulting.WebAPIMVC6Website.Web.UI.Models
 {
     public class ContactsView
     {
-        public IEnumerable<ContactView> Contacts { get; set; }
+        public IEnumerable<Contact> Contacts { get; set; }
         public int TotalItems { get; set; }
-    }
-
-    public class ContactView
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public bool Active { get; set; }
     }
 }

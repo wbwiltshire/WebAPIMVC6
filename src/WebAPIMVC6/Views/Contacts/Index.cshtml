@@ -12,8 +12,8 @@
                          <tr id="colHeaders">
                               <th id="LastName" class="sortable"><a href="#">Last Name</a></th>
                               <th id="FirstName" class="sortable"><a href="#">First Name</a></th>
-                              <th id="City" class="sortable"><a href="#">City</a></th>
-                              <th id="State" class="sortable"><a href="#">State</a></th>
+                              <th id="City.Name" class="sortable"><a href="#">City</a></th>
+                              <th id="City.State.Name" class="sortable"><a href="#">State</a></th>
                               <th><b>Active</b></th>
                          </tr>
                     </thead>
@@ -27,8 +27,8 @@
      <tr>
           <td>{{lastName}}</td>
           <td>{{firstName}}</td>
-          <td>{{city}}</td>
-          <td>{{state}}</td>
+          <td>{{city.name}}</td>
+          <td>{{city.state.name}}</td>
           <td>{{active}}</td>
      </tr>
      {{/ContactsList}}
